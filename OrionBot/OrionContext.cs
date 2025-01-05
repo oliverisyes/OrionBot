@@ -16,8 +16,8 @@ namespace OrionBot
 
 		public OrionContext()
 		{
-			DbPath = "C:\\Projects\\OrionBotDatabase\\OrionBot.db";
-			//DbPath = "/home/oliverhoward/OrionBot/OrionBotDatabase/OrionBot.db";
+			//DbPath = "C:\\Projects\\OrionBotDatabase\\OrionBot.db";
+			DbPath = "/home/oliverhoward/OrionBot/OrionBotDatabase/OrionBot.db";
 		}
 
 		protected override void OnConfiguring(DbContextOptionsBuilder options)
