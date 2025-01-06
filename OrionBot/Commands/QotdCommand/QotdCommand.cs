@@ -13,7 +13,23 @@ namespace OrionBot.Commands.QotdCommand
 		[Summary("Displays the time for someone else")]
 		public async Task ExecuteAsync([Remainder][Summary("qotd")] string phrase)
 		{
+			if (phrase.StartsWith("add"))
+			{
 
+			}
+			else if (phrase.StartsWith("channel"))
+			{
+
+			}
+
+			await ReplyAsync(phrase);
+		}
+
+		public static string GetWord(string phrase)
+		{
+			string[] splited = phrase.Split(' ');
+
+			return splited[^1];
 		}
 	}
 }

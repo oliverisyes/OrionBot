@@ -37,12 +37,12 @@ namespace OrionBot
 		public async Task StartAsync(IServiceProvider services)
 		{
 			//Load variables from .env file
-			EnvReader.Load("token.env");
+			//EnvReader.Load("token.env");
 
 			//Access token
-			string discordToken = Environment.GetEnvironmentVariable("DISCORD_TOKEN") ?? throw new Exception("Missing Discord Token");
+			//string discordToken = Environment.GetEnvironmentVariable("DISCORD_TOKEN") ?? throw new Exception("Missing Discord Token");
 
-			//string discordToken = _configuration["discordToken"] ?? throw new Exception("Missing Discord Token");
+			string discordToken = _configuration["discordToken"] ?? throw new Exception("Missing Discord Token");
 
 			_logger.LogInformation($"Starting up with token {discordToken}");
 

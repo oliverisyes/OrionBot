@@ -12,11 +12,12 @@ namespace OrionBot
 	public class OrionContext : DbContext
 	{
 		public DbSet<Players> Players { get; set; }
+		public DbSet<Qotd> Qotd { get; set; }
 		public string DbPath { get; set; }
 
 		public OrionContext()
 		{
-			DbPath = "C:\\Projects\\OrionBotDatabaseTest\\OrionBot.db";
+			DbPath = "C:\\Projects\\OrionBotDatabase\\OrionBot.db";
 			//DbPath = "/home/oliverhoward/OrionBot/OrionBotDatabase/OrionBot.db";
 		}
 
@@ -27,21 +28,21 @@ namespace OrionBot
 	public class Players
 	{
 		[Key]
-		public int userID { get; set; }
+		public int UserID { get; set; }
 
-		public ulong discordID { get; set; }
-		public string? name { get; set; }
-		public int wins { get; set; }
-		public int loses { get; set; }
-		public int kills { get; set; }
-		public string? timeZone { get; set; }
+		public ulong DiscordID { get; set; }
+		public string? Name { get; set; }
+		public int Wins { get; set; }
+		public int Loses { get; set; }
+		public int Kills { get; set; }
+		public string? TimeZone { get; set; }
 
 		//Player
 		public static bool PlayerExistsID(ulong id)
 		{
 			using var db = new OrionContext();
 			var player = db.Players
-				.Where(x => x.discordID == id)
+				.Where(x => x.DiscordID == id)
 				.FirstOrDefault();
 			if (player == null)
 			{
@@ -53,11 +54,11 @@ namespace OrionBot
 			}
 		}
 
-		public static bool PlayerExistsName(string name)
+		public static bool PlayerExistsName(string Name)
 		{
 			using var db = new OrionContext();
 			var player = db.Players
-				.Where(x => x.name == name.ToLower())
+				.Where(x => x.Name == Name.ToLower())
 				.FirstOrDefault();
 			if (player == null)
 			{
@@ -69,12 +70,12 @@ namespace OrionBot
 			}
 		}
 
-		public static void AddPlayer(ulong id, string name)
+		public static void AddPlayer(ulong id, string Name)
 		{
 			try
 			{
 				using var db = new OrionContext();
-				db.Players.Add(new Players { userID = GetUserIDNewest(), discordID = id, name = name.ToLower() });
+				db.Players.Add(new Players { UserID = GetUserIDNewest(), DiscordID = id, Name = Name.ToLower() });
 				db.SaveChanges();
 			}
 			catch (Exception ex)
@@ -83,7 +84,7 @@ namespace OrionBot
 			}
 		}
 
-		public static void RemovePlayer(ulong id)
+		public static void RemovePlayer()
 		{
 
 		}
@@ -93,8 +94,8 @@ namespace OrionBot
 		{
 			using var db = new OrionContext();
 			var player = db.Players
-				.Where(x => x.discordID == id)
-				.Select(x => x.userID)
+				.Where(x => x.DiscordID == id)
+				.Select(x => x.UserID)
 				.FirstOrDefault();
 				
 			return player;
@@ -104,7 +105,7 @@ namespace OrionBot
 		{
 			using var db = new OrionContext();
 			var player = db.Players
-				.Select(x => x.userID)
+				.Select(x => x.UserID)
 				.OrderDescending()
 				.LastOrDefault();
 
@@ -112,12 +113,12 @@ namespace OrionBot
 		}
 
 		//DiscordID
-		public static ulong GetDiscordIDName(string name)
+		public static ulong GetDiscordIDName(string Name)
 		{
 			using var db = new OrionContext();
 			var player = db.Players
-				.Where(x => x.name == name)
-				.Select(x => x.discordID)
+				.Where(x => x.Name == Name)
+				.Select(x => x.DiscordID)
 				.FirstOrDefault();
 
 			return player;
@@ -128,8 +129,8 @@ namespace OrionBot
 		{
 			using var db = new OrionContext();
 			var player = db.Players
-				.Where(x => x.discordID == id)
-				.Select(x => x.name)
+				.Where(x => x.DiscordID == id)
+				.Select(x => x.Name)
 				.FirstOrDefault();
 
 			return player ?? "Discord ID not there";
@@ -140,8 +141,8 @@ namespace OrionBot
 		{
 			using var db = new OrionContext();
 			var player = db.Players
-				.Where(x => x.discordID == id)
-				.Select(x => x.wins)
+				.Where(x => x.DiscordID == id)
+				.Select(x => x.Wins)
 				.FirstOrDefault();
 
 			return player;
@@ -152,8 +153,8 @@ namespace OrionBot
 		{
 			using var db = new OrionContext();
 			var player = db.Players
-				.Where(x => x.discordID == id)
-				.Select(x => x.loses)
+				.Where(x => x.DiscordID == id)
+				.Select(x => x.Loses)
 				.FirstOrDefault();
 
 			return player;
@@ -164,31 +165,31 @@ namespace OrionBot
 		{
 			using var db = new OrionContext();
 			var player = db.Players
-				.Where(x => x.discordID == id)
-				.Select(x => x.kills)
+				.Where(x => x.DiscordID == id)
+				.Select(x => x.Kills)
 				.FirstOrDefault();
 
 			return player;
 		}
 
-		//Timezone
+		//TimeZone
 		public static string GetZoneID(ulong id)
 		{
 			var db = new OrionContext();
 			var player = db.Players
-				.Where(x => x.discordID == id)
-				.Select(x => x.timeZone)
+				.Where(x => x.DiscordID == id)
+				.Select(x => x.TimeZone)
 				.FirstOrDefault();
 
 			return player ?? "Zone Not There";
 		}
 
-		public static string GetZoneName(string name)
+		public static string GetZoneName(string Name)
 		{
 			var db = new OrionContext();
 			var player = db.Players
-				.Where(x => x.name == name.ToLower())
-				.Select(x => x.timeZone)
+				.Where(x => x.Name == Name.ToLower())
+				.Select(x => x.TimeZone)
 				.FirstOrDefault();
 
 			return player ?? "Zone Not There";
@@ -200,10 +201,10 @@ namespace OrionBot
 			{
 				using var db = new OrionContext();
 				var player = db.Players
-					.Where(x => x.discordID == id)
+					.Where(x => x.DiscordID == id)
 					.FirstOrDefault();
 
-				player.timeZone = zone;
+				player.TimeZone = zone;
 				db.SaveChanges();
 			}
 			catch (Exception ex)
@@ -211,5 +212,13 @@ namespace OrionBot
 				Console.WriteLine(ex.ToString());
 			}
 		}
+	}
+
+	public class Qotd
+	{
+		[Key]
+		public int QotdID { get; set; }
+
+		public string? Question { get; set; }
 	}
 }

@@ -19,7 +19,7 @@ namespace OrionBot.Commands.ProfileCommand
 			string cap = name[0].ToString();
 			string space = "᲼᲼᲼᲼";
 
-			name = name.Substring(1, name.Length - 1);
+			name = name.Substring(1);
 
 			var embed = new EmbedBuilder
 			{
@@ -47,11 +47,11 @@ namespace OrionBot.Commands.ProfileCommand
 			await ReplyAsync(embed: embed.Build());
 		}
 
-		public string GetWord(string phrase)
+		public static string GetWord(string phrase)
 		{
 			string[] splited = phrase.Split(' ');
 
-			return splited[splited.Length - 1];
+			return splited[^1];
 		}
 	}
 }

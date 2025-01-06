@@ -32,7 +32,7 @@ namespace OrionBot
 			await using var db = new OrionContext();
 			Console.WriteLine($"Database path: {db.DbPath}");
 			Console.WriteLine("Checking database connects: ");
-			var playercheck = db.Players.OrderBy(b => b.userID).First();
+			var playercheck = db.Players.OrderBy(b => b.UserID).First();
 			Console.WriteLine(playercheck);
 
 			try

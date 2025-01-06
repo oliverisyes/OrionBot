@@ -94,26 +94,26 @@ namespace OrionBot.Commands.TimezoneCommand
 		}
 
 		//Timezone methods
-		public string GetTarget(string phrase)
+		public static string GetTarget(string phrase)
 		{
 			string[] splitted = phrase.Split(' ');
 			return splitted[1];
 		}
 
-		public string FixTime(ZonedDateTime brokeTime)
+		public static string FixTime(ZonedDateTime brokeTime)
 		{
 			string time = brokeTime.ToString();
-			string date = time.Substring(0, 10);
+			string date = time[..10];
 			time = time.Substring(11, 5);
 
 			return time + " (" + date + ")";
 		}
 
-		public string GetWord(string phrase)
+		public static string GetWord(string phrase)
 		{
 			string[] splited = phrase.Split(' ');
 
-			return splited[splited.Length - 1];
+			return splited[^1];
 		}
 	}
 }
