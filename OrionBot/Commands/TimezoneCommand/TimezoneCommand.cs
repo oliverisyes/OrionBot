@@ -29,7 +29,7 @@ namespace OrionBot.Commands.TimezoneCommand
 				string target = GetTarget(phrase);
 				if (Players.PlayerExistsName(target))
 				{
-					string userZone = Players.GetZone(target);
+					string userZone = Players.GetZoneName(target);
 
 					if (userZone == "Zone Not There" || userZone == "0")
 					{
@@ -56,17 +56,31 @@ namespace OrionBot.Commands.TimezoneCommand
 			else if (phrase.StartsWith("add"))
 			{
 				string target = GetTarget(phrase);
-				if (Players.PlayerExistsName(target))
+				if (Players.PlayerExistsID(id) && Players.GetZoneID(id) != "0")
 				{
-					Players.AddZone(id, GetWord(phrase));
+					await ReplyAsync("Only one timezone can be added for each user");
 				}
 				else
 				{
-					Players.AddPlayer(id, target);
-					Players.AddZone(id,GetWord(phrase));
-				}
+					if (!Players.PlayerExistsName(target))
+					{
+						Players.AddPlayer(id, target);
 
-				await ReplyAsync("Your timezone has been added");
+					}
+
+					string userzone = GetWord(phrase);
+					
+					try
+					{
+						DateTimeZone zone = DateTimeZoneProviders.Tzdb[userzone];
+						Players.AddZone(id, userzone);
+						await ReplyAsync("Your timezone has been added");
+					}
+					catch
+					{
+						await ReplyAsync("This city isn't in our database, please try another");
+					}
+				}
 			}
 			else if (phrase.StartsWith("remove"))
 			{

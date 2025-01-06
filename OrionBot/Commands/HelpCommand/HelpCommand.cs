@@ -23,10 +23,28 @@ namespace OrionBot.Commands.HelpCommand
 				//Description = "Use !help [command] to see more information about each command\n",
 				Color = Color.Red
 			};
+
+			embed.AddField("Profile",
+				//View own profile
+				"View your own profile\n" +
+				"```!profile```\n" +
+				//View another profile
+				"View someone else's profile\n" +
+				"```!profile [name]```");
+
 			embed.AddField("Timezones:",
-				"Add yourself and your timezone to the bot \n```!time add [name] [Continent/Major_City]```\n" +
-				"Find out what time it is for someone else \n```!time for [name]```\n" +
-				"Remove your timezone from the bot\n```!time remove```\n");
+				//Add Timezone
+				"Add yourself and your timezone to the bot\n" +
+				"For Australia, continent is Australia\n" +
+				"For islands, continent is the ocean they're in\n" +
+				"If unsure check the list of IANA timezones: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones\n" +
+				"```!time add [name] [Continent/Major_City]```\n" +
+				//Find timezone
+				"Find out what time it is for someone else \n" +
+				"```!time for [name]```\n" +
+				//Remove timezone
+				"Remove your timezone from the bot\n" +
+				"```!time remove```");
 
 			await ReplyAsync(embed: embed.Build());
 		}
