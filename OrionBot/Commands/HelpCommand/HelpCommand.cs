@@ -17,16 +17,16 @@ namespace OrionBot.Commands.HelpCommand
 		[Summary("Displays all the bot's commands")]
 		public async Task ExecuteAsync()
 		{
-			ulong id = Context.Guild.Id;
-			char prefix = Servers.GetPrefix(id);
+			ulong serverID = Context.Guild.Id;
+			char prefix = Servers.GetPrefix(serverID);
 			string time = "";
 			string qotd = "";
 
-			if (Servers.TimeEnabled(id))
+			if (Servers.TimeEnabled(serverID))
 			{
 				time = ", time";
 			}
-			if (Servers.QotdEnabled(id))
+			if (Servers.QotdEnabled(serverID))
 			{
 				qotd = ", qotd";
 			}
@@ -55,8 +55,8 @@ namespace OrionBot.Commands.HelpCommand
 		[Summary("Display a specific command")]
 		public async Task ExecuteAsync([Remainder][Summary("qotd")] string category)
 		{
-			ulong id = Context.Guild.Id;
-			char prefix = Servers.GetPrefix(id);
+			ulong serverID = Context.Guild.Id;
+			char prefix = Servers.GetPrefix(serverID);
 			category.ToLower();
 
 			var embed = new EmbedBuilder
@@ -84,7 +84,7 @@ namespace OrionBot.Commands.HelpCommand
 				"Permanently remove your profile\n" +
 				"```" + prefix + "profile remove```\n");
 			}
-			else if (category == "time" && Servers.TimeEnabled(id))
+			else if (category == "time" && Servers.TimeEnabled(serverID))
 			{
 				embed.AddField("Timezone Commands:",
 				//View your time
@@ -101,7 +101,7 @@ namespace OrionBot.Commands.HelpCommand
 				"Remove your timezone from the bot\n" +
 				"```" + prefix + "time remove```\n");
 			}
-			else if (category == "qotd" && Servers.QotdEnabled(id))
+			else if (category == "qotd" && Servers.QotdEnabled(serverID))
 			{
 				embed.AddField("Qotd Commands:",
 					//Set qotd channel

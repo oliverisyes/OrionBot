@@ -13,30 +13,30 @@ namespace OrionBot.Commands.EnableCommand
 		[Summary("Disables a command")]
 		public async Task ExecuteAsync([Remainder][Summary("disable")] string command)
 		{
-			ulong id = Context.Guild.Id;
+			ulong serverID = Context.Guild.Id;
 
 			if (command == "time")
 			{
-				if (!Servers.TimeEnabled(id))
+				if (!Servers.TimeEnabled(serverID))
 				{
 					await ReplyAsync("This command is already disabled");
 				}
 				else
 				{
-					Servers.EnableTime(id);
+					Servers.EnableTime(serverID);
 
 					await ReplyAsync("Timezone command has been disabled");
 				}
 			}
 			else if (command == "qotd")
 			{
-				if (!Servers.QotdEnabled(id))
+				if (!Servers.QotdEnabled(serverID))
 				{
 					await ReplyAsync("This command is already disabled");
 				}
 				else
 				{
-					Servers.EnableQotd(id);
+					Servers.EnableQotd(serverID);
 
 					await ReplyAsync("Qotd command has been disabled");
 				}

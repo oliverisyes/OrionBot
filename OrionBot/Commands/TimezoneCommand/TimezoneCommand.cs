@@ -37,24 +37,31 @@ namespace OrionBot.Commands.TimezoneCommand
 
 		[Command("time")]
 		[Summary("Displays the time for someone else")]
-		public async Task ExecuteAsync([Remainder][Summary("timezone")] string zone)
+		public async Task ExecuteAsync([Remainder][Summary("timezone")] string phrase)
 		{
 			ulong id = Context.User.Id;
 			ulong serverID = Context.Guild.Id;
 
 			//Add a timezone
-			if (zone.StartsWith("add") && Servers.TimeEnabled(id))
+			if (phrase.StartsWith("add") && Servers.TimeEnabled(serverID))
 			{
+				string zone = phrase.Replace("add ", "");
+
 				try
 				{
 					DateTimeZone convertedzone = DateTimeZoneProviders.Tzdb[zone];
 					if (Players.PlayerExistsID(id))
 					{
 						Players.AddZone(id, zone);
-					}
-					Players.AddPlayer(id, zone);
 
-					await ReplyAsync("Your timezone has been added");
+						await ReplyAsync("Your timezone has been added");
+					}
+					else
+					{
+						await ReplyAsync("You are not in the database, please add youself via the profile add command");
+					}
+
+					
 				}
 				catch
 				{
@@ -62,9 +69,9 @@ namespace OrionBot.Commands.TimezoneCommand
 						"Refer to " + Servers.GetPrefix(serverID) + "help time, if needed");
 				}
 			}
-			else if (zone.StartsWith("for") && Servers.TimeEnabled(id))
+			else if (phrase.StartsWith("for") && Servers.TimeEnabled(serverID))
 			{
-				string target = zone.Replace("for ", "");
+				string target = phrase.Replace("for ", "");
 
 				if (Players.PlayerExistsName(target))
 				{
@@ -75,7 +82,7 @@ namespace OrionBot.Commands.TimezoneCommand
 					}
 					else
 					{
-						DateTimeZone convertedzone = DateTimeZoneProviders.Tzdb[zone];
+						DateTimeZone convertedzone = DateTimeZoneProviders.Tzdb[timezone];
 						ZonedDateTime time = Instant.FromDateTimeUtc(DateTime.UtcNow).InZone(convertedzone);
 
 						await ReplyAsync("The time for " + target + " is " + FixTime(time));
@@ -86,7 +93,7 @@ namespace OrionBot.Commands.TimezoneCommand
 					await ReplyAsync("This person isn't in the database");
 				}
 			}
-			else if (zone.StartsWith("remove") && Servers.TimeEnabled(id))
+			else if (phrase.StartsWith("remove") && Servers.TimeEnabled(serverID))
 			{
 				if (Players.PlayerExistsID(id))
 				{
@@ -98,6 +105,10 @@ namespace OrionBot.Commands.TimezoneCommand
 				{
 					await ReplyAsync("You already aren't in the database");
 				}
+			}
+			else
+			{
+				await ReplyAsync("This command doesn't exist");
 			}
 		}
 

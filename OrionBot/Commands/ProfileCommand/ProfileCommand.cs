@@ -14,8 +14,8 @@ namespace OrionBot.Commands.ProfileCommand
 		[Summary("Displays the user's profile")]
 		public async Task ExecuteAsync()
 		{
-			ulong id = Context.User.Id;
-			string name = Players.GetNameID(id);
+			ulong userID = Context.User.Id;
+			string name = Players.GetNameID(userID);
 			string cap = name[0].ToString();
 			string space = "᲼᲼᲼᲼";
 
@@ -35,21 +35,21 @@ namespace OrionBot.Commands.ProfileCommand
 
 				embed.AddField("Profile",
 					//UserID
-					"User ID: " + Players.GetUserIDID(id) + space +
+					"User ID: " + Players.GetUserIDID(userID) + space +
 					//DiscordID
-					"Discord ID: " + id);
+					"Discord ID: " + userID);
 
 				embed.AddField("Hunger Games",
 					//Wins
-					"Wins: " + Players.GetWinsID(id) + space +
+					"Wins: " + Players.GetWinsID(userID) + space +
 					//Loses
-					"Loses: " + Players.GetLosesID(id) + space +
+					"Loses: " + Players.GetLosesID(userID) + space +
 					//Kills
-					"Kills: " + Players.GetKillsID(id));
+					"Kills: " + Players.GetKillsID(userID));
 
 				embed.AddField("Timezone",
 					//Timezone
-					Players.GetZoneID(id));
+					Players.GetZoneID(userID));
 
 				await ReplyAsync(embed: embed.Build());
 			}
@@ -60,26 +60,26 @@ namespace OrionBot.Commands.ProfileCommand
 		public async Task ExecuteAsync([Remainder][Summary("profile")] string phrase)
 		{
 			string name = phrase;
-			ulong id = Context.User.Id;
+			ulong userID = Context.User.Id;
 			string cap = name[0].ToString();
 			string space = "᲼᲼᲼᲼";
 			string cutName = name.Substring(1);
 
 			if (phrase.StartsWith("add"))
 			{
-				Players.AddPlayer(id, name);
+				Players.AddPlayer(userID, name);
 				await ReplyAsync("You have been added to the database");
 			}
 			else if (phrase.StartsWith("remove"))
 			{
-				Players.RemovePlayer(id);
+				Players.RemovePlayer(userID);
 				await ReplyAsync("You have been removed from the database");
 			}
 			else if (phrase.StartsWith("change"))
 			{
-				if (Players.PlayerExistsID(id))
+				if (Players.PlayerExistsID(userID))
 				{
-					Players.ChangePlayer(id, phrase);
+					Players.ChangePlayer(userID, phrase);
 					await ReplyAsync("Your name has been changed");
 				}
 				else
@@ -91,7 +91,7 @@ namespace OrionBot.Commands.ProfileCommand
 			{
 				if (Players.PlayerExistsName(name))
 				{
-					id = Players.GetDiscordIDName(name);
+					userID = Players.GetDiscordIDName(name);
 
 					var embed = new EmbedBuilder
 					{
@@ -100,21 +100,21 @@ namespace OrionBot.Commands.ProfileCommand
 					};
 					embed.AddField("Profile",
 						//UserID
-						"User ID: " + Players.GetUserIDID(id) + space +
+						"User ID: " + Players.GetUserIDID(userID) + space +
 						//DiscordID
-						"Discord ID: " + id);
+						"Discord ID: " + userID);
 
 					embed.AddField("Hunger Games",
 						//Wins
-						"Wins: " + Players.GetWinsID(id) + space +
+						"Wins: " + Players.GetWinsID(userID) + space +
 						//Loses
-						"Loses: " + Players.GetLosesID(id) + space +
+						"Loses: " + Players.GetLosesID(userID) + space +
 						//Kills
-						"Kills: " + Players.GetKillsID(id));
+						"Kills: " + Players.GetKillsID(userID));
 
 					embed.AddField("Timezone",
 						//Timezone
-						Players.GetZoneID(id));
+						Players.GetZoneID(userID));
 
 					await ReplyAsync(embed: embed.Build());
 				}

@@ -14,7 +14,7 @@ namespace OrionBot.Commands.QotdCommand
 		[Summary("Displays the time for someone else")]
 		public async Task ExecuteAsync([Remainder][Summary("qotd")] string phrase)
 		{
-			ulong id = Context.Guild.Id;
+			ulong serverID = Context.Guild.Id;
 			phrase.ToLower();
 
 			if (phrase.StartsWith("add"))
@@ -24,11 +24,11 @@ namespace OrionBot.Commands.QotdCommand
 
 				await ReplyAsync("Added: " + question);
 			}
-			else if (phrase.StartsWith("channel") && Servers.QotdEnabled(id))
+			else if (phrase.StartsWith("channel") && Servers.QotdEnabled(serverID))
 			{
 				ulong channel = Context.Message.Channel.Id;
 
-				Servers.SetQotdChannel(id, channel);
+				Servers.SetQotdChannel(serverID, channel);
 
 				await ReplyAsync("Qotd channel has been set");
 			}
