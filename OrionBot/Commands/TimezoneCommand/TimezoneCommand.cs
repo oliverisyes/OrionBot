@@ -10,94 +10,95 @@ using System.IO;
 using System.Linq;
 using System.Reactive;
 using System.Reflection.Emit;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace OrionBot.Commands.TimezoneCommand
 {
 	public class TimezoneCommand : ModuleBase<SocketCommandContext> 
 	{
 		[Command("time")]
-		[Summary("Displays the time for someone else")]
-		public async Task ExecuteAsync([Remainder][Summary("timezone")] string phrase)
+		[Summary("Displays your time")]
+		public async Task ExecuteAsync()
 		{
 			ulong id = Context.User.Id;
 
-			if (phrase.StartsWith("for"))
+			DateTimeZone zone = DateTimeZoneProviders.Tzdb[Players.GetZoneID(id)];
+
+			//Convert utc into target's time
+			Instant instant = Instant.FromDateTimeUtc(DateTime.UtcNow);
+			ZonedDateTime time = instant.InZone(zone);
+
+			await ReplyAsync("The time for you is " + FixTime(time));
+		}
+
+		[Command("time")]
+		[Summary("Displays the time for someone else")]
+		public async Task ExecuteAsync([Remainder][Summary("timezone")] string zone)
+		{
+			ulong id = Context.User.Id;
+			ulong serverID = Context.Guild.Id;
+
+			//Add a timezone
+			if (zone.StartsWith("add") && Servers.TimeEnabled(id))
 			{
-				string target = GetTarget(phrase);
+				try
+				{
+					DateTimeZone convertedzone = DateTimeZoneProviders.Tzdb[zone];
+					if (Players.PlayerExistsID(id))
+					{
+						Players.AddZone(id, zone);
+					}
+					Players.AddPlayer(id, zone);
+
+					await ReplyAsync("Your timezone has been added");
+				}
+				catch
+				{
+					await ReplyAsync(zone + " isn't in our database, please try another.\n" +
+						"Refer to " + Servers.GetPrefix(serverID) + "help time, if needed");
+				}
+			}
+			else if (zone.StartsWith("for") && Servers.TimeEnabled(id))
+			{
+				string target = zone.Replace("for ", "");
+
 				if (Players.PlayerExistsName(target))
 				{
-					string userZone = Players.GetZoneName(target);
-
-					if (userZone == "Zone Not There" || userZone == "0")
+					string timezone = Players.GetZoneName(target);
+					if (timezone == null || timezone == "N/A")
 					{
 						await ReplyAsync("This person doesn't have a timezone saved");
 					}
 					else
 					{
-						//Gets the name of the target and their timezone
-						DateTimeZone zone = DateTimeZoneProviders.Tzdb[userZone];
-
-						//Convert utc into target's time
-						DateTime utcNow = DateTime.UtcNow;
-						Instant instant = Instant.FromDateTimeUtc(utcNow);
-						ZonedDateTime time = instant.InZone(zone);
+						DateTimeZone convertedzone = DateTimeZoneProviders.Tzdb[zone];
+						ZonedDateTime time = Instant.FromDateTimeUtc(DateTime.UtcNow).InZone(convertedzone);
 
 						await ReplyAsync("The time for " + target + " is " + FixTime(time));
 					}
 				}
 				else
 				{
-					await ReplyAsync("This person doesn't exist");
+					await ReplyAsync("This person isn't in the database");
 				}
 			}
-			else if (phrase.StartsWith("add"))
+			else if (zone.StartsWith("remove") && Servers.TimeEnabled(id))
 			{
-				string target = GetTarget(phrase);
-				if (Players.PlayerExistsID(id) && Players.GetZoneID(id) != "0")
+				if (Players.PlayerExistsID(id))
 				{
-					await ReplyAsync("Only one timezone can be added for each user");
+					Players.AddZone(id, "N/A");
+
+					await ReplyAsync("Your timezone has been removed");
 				}
 				else
 				{
-					if (!Players.PlayerExistsName(target))
-					{
-						Players.AddPlayer(id, target);
-
-					}
-
-					string userzone = GetWord(phrase);
-					
-					try
-					{
-						DateTimeZone zone = DateTimeZoneProviders.Tzdb[userzone];
-						Players.AddZone(id, userzone);
-						await ReplyAsync("Your timezone has been added");
-					}
-					catch
-					{
-						await ReplyAsync("This city isn't in our database, please try another");
-					}
+					await ReplyAsync("You already aren't in the database");
 				}
 			}
-			else if (phrase.StartsWith("remove"))
-			{
-				Players.AddZone(id, "0");
-				await ReplyAsync("Your timezone has been removed");
-			}
-			else
-			{
-				await ReplyAsync("This isn't a command");
-			}
-		}
-
-		//Timezone methods
-		public static string GetTarget(string phrase)
-		{
-			string[] splitted = phrase.Split(' ');
-			return splitted[1];
 		}
 
 		public static string FixTime(ZonedDateTime brokeTime)
@@ -107,13 +108,6 @@ namespace OrionBot.Commands.TimezoneCommand
 			time = time.Substring(11, 5);
 
 			return time + " (" + date + ")";
-		}
-
-		public static string GetWord(string phrase)
-		{
-			string[] splited = phrase.Split(' ');
-
-			return splited[^1];
 		}
 	}
 }

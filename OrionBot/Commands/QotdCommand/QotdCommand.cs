@@ -1,4 +1,5 @@
 ﻿using Discord.Commands;
+using Discord.WebSocket;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,23 +14,24 @@ namespace OrionBot.Commands.QotdCommand
 		[Summary("Displays the time for someone else")]
 		public async Task ExecuteAsync([Remainder][Summary("qotd")] string phrase)
 		{
+			ulong id = Context.Guild.Id;
+			phrase.ToLower();
+
 			if (phrase.StartsWith("add"))
 			{
+				string question = phrase.Replace("add ", "");
+				Qotd.AddQuestion(question);
 
+				await ReplyAsync("Added: " + question);
 			}
-			else if (phrase.StartsWith("channel"))
+			else if (phrase.StartsWith("channel") && Servers.QotdEnabled(id))
 			{
+				ulong channel = Context.Message.Channel.Id;
 
+				Servers.SetQotdChannel(id, channel);
+
+				await ReplyAsync("Qotd channel has been set");
 			}
-
-			await ReplyAsync(phrase);
-		}
-
-		public static string GetWord(string phrase)
-		{
-			string[] splited = phrase.Split(' ');
-
-			return splited[^1];
 		}
 	}
 }
