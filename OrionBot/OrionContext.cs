@@ -12,14 +12,15 @@ namespace OrionBot
 	public class OrionContext : DbContext
 	{
 		public DbSet<Servers> Servers { get; set; }
+		public DbSet<Server_Users> Server_Users { get; set; }
 		public DbSet<Players> Players { get; set; }
 		public DbSet<Qotd> Qotd { get; set; }
 		public string DbPath { get; set; }
 
 		public OrionContext()
 		{
-			//DbPath = "C:\\Projects\\OrionBotDatabase\\OrionBot.db";
-			DbPath = "/home/oliverhoward/OrionBot/OrionBotDatabase/OrionBot.db";
+			DbPath = "C:\\Projects\\OrionBotDatabase\\OrionBot.db";
+			//DbPath = "/home/oliverhoward/OrionBot/OrionBotDatabase/OrionBot.db";
 		}
 
 		protected override void OnConfiguring(DbContextOptionsBuilder options)
@@ -41,11 +42,48 @@ namespace OrionBot
 		public int HungerGamesCommand { get; set; }
 
 		//Server
+		public static bool ServerExists(ulong serverID)
+		{
+			using var db = new OrionContext();
+			var server = db.Servers
+				.Where(x => x.DiscordID == serverID)
+				.FirstOrDefault();
+
+			if (server == null)
+			{
+				return false;
+			}
+			else
+			{
+				return true;
+			}
+		}
+
+		public static int GetLatestServerID()
+		{
+			using var db = new OrionContext();
+			var server = db.Servers
+				.OrderDescending()
+				.Last();
+
+			return server.ServerID;
+		}
+
 		public static void AddServer(ulong id, string name)
 		{
 			using var db = new OrionContext();
 			var server = db.Servers
-				.Add(new Servers { ServerID = 0, DiscordID = id, Name = name, QotdID = 1 });
+				.Add(new Servers
+				{
+					ServerID = 0,
+					DiscordID = id,
+					Name = name,
+					CommandPrefix = '!',
+					QotdID = 1,
+					QotdCommand = 1,
+					TimezoneCommand = 1,
+					HungerGamesCommand = 1,
+				});
 			db.SaveChanges();
 		}
 
@@ -207,6 +245,55 @@ namespace OrionBot
 		}
 	}
 
+	public class Server_Users
+	{
+		[Key]
+		public int Server_UserID { get; set; }
+
+		public ulong UserID { get; set; }
+		public ulong ServerID { get; set; }
+
+		public static void AddServerUser(ulong userID, ulong serverID)
+		{
+			using var db = new OrionContext();
+			var server = db.Server_Users
+				.Add(new Server_Users 
+				{ 
+					Server_UserID = 0, 
+					UserID = userID, 
+					ServerID = serverID 
+				});
+			db.SaveChanges();
+		}
+
+		public static void RemoveServerUser(ulong userID, ulong serverID)
+		{
+			using var db = new OrionContext();
+			var server = db.Server_Users
+				.Where(x => x.UserID == userID && x.ServerID == serverID)
+				.FirstOrDefault();
+			db.Server_Users.Remove(server);
+			db.SaveChanges();
+		}
+
+		public static bool ServerUserExists(ulong userID, ulong serverID)
+		{
+			using var db = new OrionContext();
+			var server = db.Server_Users
+				.Where(x => x.UserID == userID && x.ServerID == serverID)
+				.FirstOrDefault();
+
+			if (server == null)
+			{
+				return false;
+			}
+			else
+			{
+				return true;
+			}
+		}
+	}
+
 	public class Players
 	{
 		[Key]
@@ -226,6 +313,7 @@ namespace OrionBot
 			var player = db.Players
 				.Where(x => x.DiscordID == id)
 				.FirstOrDefault();
+
 			if (player == null)
 			{
 				return false;
@@ -252,14 +340,19 @@ namespace OrionBot
 			}
 		}
 
-		public static void AddPlayer(ulong id, string name)
+		public static void AddPlayer(ulong userID, string name, ulong serverID)
 		{
 			try
 			{
-				Console.WriteLine(GetUserIDNewest() + 1);
 				using var db = new OrionContext();
-				db.Players.Add(new Players { UserID = GetUserIDNewest() + 1, DiscordID = id, Name = name.ToLower() });
+				db.Players.Add(new Players 
+				{ 
+					UserID = GetUserIDNewest() + 1, 
+					DiscordID = userID, 
+					Name = name.ToLower() 
+				});
 				db.SaveChanges();
+				Server_Users.AddServerUser(userID, serverID);
 			}
 			catch (Exception ex)
 			{
@@ -273,17 +366,17 @@ namespace OrionBot
 			var player = db.Players
 				.Where(x => x.DiscordID == id)
 				.FirstOrDefault();
-			
 			player.Name = name;
 			db.SaveChanges();
 		}
 
-		public static void RemovePlayer(ulong id)
+		public static void RemovePlayer(ulong userID, ulong serverID)
 		{
 			using var db = new OrionContext();
 			var player = db.Players
-				.Where(x => x.DiscordID == id)
+				.Where(x => x.DiscordID == userID)
 				.FirstOrDefault();
+			Server_Users.RemoveServerUser(userID, serverID);
 			db.Players.Remove(player);
 			db.SaveChanges();
 		}
@@ -305,7 +398,7 @@ namespace OrionBot
 			using var db = new OrionContext();
 			var player = db.Players
 				.Select(x => x.UserID)
-				.OrderDescending()
+				.Order()
 				.LastOrDefault();
 
 			return player;
@@ -402,7 +495,6 @@ namespace OrionBot
 				var player = db.Players
 					.Where(x => x.DiscordID == id)
 					.FirstOrDefault();
-
 				player.TimeZone = zone;
 				db.SaveChanges();
 			}

@@ -60,8 +60,6 @@ namespace OrionBot.Commands.TimezoneCommand
 					{
 						await ReplyAsync("You are not in the database, please add youself via the profile add command");
 					}
-
-					
 				}
 				catch
 				{

@@ -99,6 +99,19 @@ namespace OrionBot
 			//Check if message is a command
 			int position = 0;
 			SocketCommandContext command = new SocketCommandContext(_client, message);
+			ulong userID = command.User.Id;
+			ulong serverID = command.Guild.Id;
+			string serverName = command.Guild.Name;
+
+			if (!Servers.ServerExists(serverID))
+			{
+				Servers.AddServer(serverID, serverName);
+			}
+			if (!Server_Users.ServerUserExists(userID, serverID) && Players.PlayerExistsID(userID))
+			{
+				Console.WriteLine(Server_Users.ServerUserExists(userID, serverID));
+				Server_Users.AddServerUser(userID, serverID);
+			}
 
 			if (message.HasCharPrefix(Servers.GetPrefix(command.Guild.Id), ref position))
 			{

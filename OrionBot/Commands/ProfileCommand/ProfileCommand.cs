@@ -61,18 +61,27 @@ namespace OrionBot.Commands.ProfileCommand
 		{
 			string name = phrase;
 			ulong userID = Context.User.Id;
+			ulong serverID = Context.Guild.Id;
 			string cap = name[0].ToString();
 			string space = "᲼᲼᲼᲼";
 			string cutName = name.Substring(1);
 
 			if (phrase.StartsWith("add"))
 			{
-				Players.AddPlayer(userID, name);
-				await ReplyAsync("You have been added to the database");
+				name = name.Replace("add ", "");
+				if (Players.PlayerExistsID(userID))
+				{
+					await ReplyAsync("You are already in the database");
+				}
+				else
+				{
+					Players.AddPlayer(userID, name, serverID);
+					await ReplyAsync("You have been added to the database");
+				}
 			}
 			else if (phrase.StartsWith("remove"))
 			{
-				Players.RemovePlayer(userID);
+				Players.RemovePlayer(userID, serverID);
 				await ReplyAsync("You have been removed from the database");
 			}
 			else if (phrase.StartsWith("change"))
