@@ -31,5 +31,5 @@ You can also enable and disable commands if needed do: !enable or !disable follo
 !time remove allows the user to remove their timezone from the bot (The profile will remain however).
 
 <h3>Question Of The Day Commands</h3>
-!qotd channel will set the channel the bot will send the qotd to, this must be used in the wanted channel.
+!qotd channel will set the channel the bot will send the qotd to, this must be used in the wanted channel.\n
 !qotd role {role ID} will mention the role when the qotd is sent.
