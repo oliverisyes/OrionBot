@@ -84,8 +84,8 @@ namespace OrionBot
 			ITrigger trigger = TriggerBuilder.Create()
 				.WithIdentity("trigger1", "group1")
 				.StartNow()
-				.WithCronSchedule("0 * * * * ?")
-				//.WithCronSchedule("0 0 15 * * ?")
+				//.WithCronSchedule("0 * * * * ?")
+				.WithCronSchedule("0 0 15 * * ?")
 				.ForJob("job1", "group1")
 				.Build();
 
