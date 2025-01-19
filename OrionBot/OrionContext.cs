@@ -19,8 +19,8 @@ namespace OrionBot
 
 		public OrionContext()
 		{
-			DbPath = "C:\\Projects\\OrionBotDatabase\\OrionBot.db";
 			//DbPath = "/home/oliverhoward/OrionBot/OrionBotDatabase/OrionBot.db";
+			DbPath = "C:\\Projects\\OrionBotDatabase\\OrionBot.db";
 		}
 
 		protected override void OnConfiguring(DbContextOptionsBuilder options)
@@ -37,6 +37,7 @@ namespace OrionBot
 		public char CommandPrefix { get; set; }
 		public int QotdID { get; set; }
 		public ulong QotdChannel {  get; set; }
+		public ulong QotdRole { get; set; }
 		public int QotdCommand { get; set; }
 		public int TimezoneCommand { get; set; }
 		public int HungerGamesCommand { get; set; }
@@ -64,7 +65,7 @@ namespace OrionBot
 			using var db = new OrionContext();
 			var server = db.Servers
 				.OrderDescending()
-				.Last();
+				.FirstOrDefault();
 
 			return server.ServerID;
 		}
@@ -80,6 +81,8 @@ namespace OrionBot
 					Name = name,
 					CommandPrefix = '!',
 					QotdID = 1,
+					QotdChannel = 0,
+					QotdRole = 0,
 					QotdCommand = 1,
 					TimezoneCommand = 1,
 					HungerGamesCommand = 1,
@@ -88,11 +91,12 @@ namespace OrionBot
 		}
 
 		//CommandPrefix
-		public static char GetPrefix(ulong id)
+		public static char GetPrefix(ulong discordID)
 		{
 			using var db = new OrionContext();
+			var test = db.Servers;
 			var server = db.Servers
-				.Where(x => x.DiscordID == id)
+				.Where(x => x.DiscordID == discordID)
 				.Select(x => x.CommandPrefix)
 				.FirstOrDefault();
 
@@ -158,6 +162,68 @@ namespace OrionBot
 				.Where(x => x.DiscordID == id)
 				.FirstOrDefault();
 			server.QotdChannel = channelID;
+
+			db.SaveChanges();
+		}
+
+		public static ulong GetQotdChannel(int serverID)
+		{
+			try
+			{
+				var db = new OrionContext();
+				var channel = db.Servers
+					.Where(x => x.ServerID == serverID)
+					.Select(x => x.QotdChannel)
+					.FirstOrDefault();
+
+				return channel;
+			}
+			catch
+			{
+				return 0;
+			}
+		}
+
+		public static int GetQotdID(int serverID)
+		{
+			var db = new OrionContext();
+			var qotdID = db.Servers
+				.Where(x => x.ServerID == serverID)
+				.Select(x => x.QotdID)
+				.FirstOrDefault();
+
+			return qotdID;
+		}
+
+		public static void IncrementQotdID(int serverID)
+		{
+			var db = new OrionContext();
+			var server = db.Servers
+				.Where(x => x.ServerID == serverID)
+				.FirstOrDefault();
+			server.QotdID++;
+
+			db.SaveChanges();
+		}
+
+		public static ulong GetQotdRole(int serverID)
+		{
+			var db = new OrionContext();
+			var role = db.Servers
+				.Where(x => x.ServerID == serverID)
+				.Select(x => x.QotdRole)
+				.FirstOrDefault();
+			
+			return role;
+		}
+
+		public static void SetQotdRole(ulong serverID, ulong role)
+		{
+			var db = new OrionContext();
+			var server = db.Servers
+				.Where(x => x.DiscordID == serverID)
+				.FirstOrDefault();
+			server.QotdRole = role;
 
 			db.SaveChanges();
 		}
@@ -531,6 +597,17 @@ namespace OrionBot
 			var qotd = db.Qotd
 				.Add(new Qotd { QotdID = GetQotdIDNewest(), Question = question });
 			db.SaveChanges();
+		}
+
+		public static string GetQuestion(int qotdID)
+		{
+			var db = new OrionContext();
+			var qotd = db.Qotd
+				.Where(x => x.QotdID == qotdID)
+				.Select(x => x.Question)
+				.FirstOrDefault();
+
+			return qotd;
 		}
 	}
 }

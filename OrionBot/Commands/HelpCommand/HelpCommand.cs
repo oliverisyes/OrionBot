@@ -24,23 +24,23 @@ namespace OrionBot.Commands.HelpCommand
 
 			if (Servers.TimeEnabled(serverID))
 			{
-				time = ", time";
+				time = " | time";
 			}
 			if (Servers.QotdEnabled(serverID))
 			{
-				qotd = ", qotd";
+				qotd = " | qotd";
 			}
 
 			var embed = new EmbedBuilder
 			{
 				Title = "OrionBot Commands",
 				Description = "Use " + prefix + "help [category] to see information about each command category\n" +
-				"Command categories: profile" + time,
+				"Command categories: profile" + time + qotd,
 				Color = Color.Red
 			};
 
 			embed.AddField("Enable or Disable Commands",
-				"Enable or disable a command, all categories are disabled by default\n" +
+				"Enable or disable a command, all categories are enabled by default\n" +
 				"```" + prefix + "enable [category]\n" +
 				prefix + "disable [category]```");
 
@@ -53,7 +53,7 @@ namespace OrionBot.Commands.HelpCommand
 
 		[Command("help")]
 		[Summary("Display a specific command")]
-		public async Task ExecuteAsync([Remainder][Summary("qotd")] string category)
+		public async Task ExecuteAsync([Remainder][Summary("help")] string category)
 		{
 			ulong serverID = Context.Guild.Id;
 			char prefix = Servers.GetPrefix(serverID);
@@ -107,7 +107,10 @@ namespace OrionBot.Commands.HelpCommand
 					//Set qotd channel
 					"Set a channel for qotd questions to be sent\n" +
 					"Please use this command in the channel you want the qotd to be sent to\n" +
-					"```" + prefix + "qotd channel```");
+					"```" + prefix + "qotd channel```" +
+					//Set a qotd role
+					"Please use this command with the role ID of the role you would like to be pinged for qotd (optional)\n" +
+					"```" + prefix + "qotd role [role ID]");
 			}
 
 			await ReplyAsync(embed: embed.Build());

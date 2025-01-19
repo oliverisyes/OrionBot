@@ -8,6 +8,11 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using System;
+using OrionBot.Commands.QotdCommand;
+using System.Threading.Channels;
+using Quartz;
+using Quartz.Impl;
+using Discord.Rest;
 
 namespace OrionBot
 {
@@ -36,7 +41,7 @@ namespace OrionBot
 
 		public async Task StartAsync(IServiceProvider services)
 		{
-			Console.WriteLine("Device");
+			Console.WriteLine("Bot (0 = Prototype, 1 = Full)");
 			int device = Convert.ToInt16(Console.ReadLine());
 			string discordToken = "0";
 
@@ -61,6 +66,32 @@ namespace OrionBot
 
 			await _client.LoginAsync(TokenType.Bot, discordToken);
 			await _client.StartAsync();
+			await _client.SetCustomStatusAsync("!help for help");
+
+			StdSchedulerFactory factory = new StdSchedulerFactory();
+			IScheduler scheduler = await factory.GetScheduler();
+
+			await scheduler.Start();
+
+			IJobDetail job = JobBuilder.Create<QotdSending>()
+				.WithIdentity("job1", "group1")
+				.SetJobData(new JobDataMap
+				{
+					["_client"] = _client,
+				})
+				.Build();
+
+			ITrigger trigger = TriggerBuilder.Create()
+				.WithIdentity("trigger1", "group1")
+				.StartNow()
+				.WithCronSchedule("0 * * * * ?")
+				//.WithCronSchedule("0 0 15 * * ?")
+				.ForJob("job1", "group1")
+				.Build();
+
+			await scheduler.ScheduleJob(job, trigger);
+
+			//await scheduler.Shutdown();
 
 			_client.JoinedGuild += JoinedGuildAsync;
 			_client.MessageReceived += HandleCommandAsync;
@@ -109,27 +140,29 @@ namespace OrionBot
 			}
 			if (!Server_Users.ServerUserExists(userID, serverID) && Players.PlayerExistsID(userID))
 			{
-				Console.WriteLine(Server_Users.ServerUserExists(userID, serverID));
 				Server_Users.AddServerUser(userID, serverID);
 			}
 
 			if (message.HasCharPrefix(Servers.GetPrefix(command.Guild.Id), ref position))
 			{
 				//Execute command if it exists in ServiceCollection
-				await _commands.ExecuteAsync(new SocketCommandContext(_client, message), position, _serviceProvider);
-			}
-			else if (message.ToString() == "star wars")
-			{
-				position = 0;
-
-				//Execute command if it exists in ServiceCollection
 				await _commands.ExecuteAsync(command, position, _serviceProvider);
+			}
+			else if (message.ToString().Contains("star wars") && userID != 503907258640367616 && command.Guild.GetUser(503907258640367616) != null)
+			{
+				StarWars(command);
 			}
 		}
 
 		public static void SetUpServer(ulong id, string name)
 		{
 			Servers.AddServer(id, name);
+		}
+
+		public async static void StarWars(SocketCommandContext command)
+		{
+			var channel = command.Channel as IMessageChannel;
+			await channel.SendMessageAsync($"<@503907258640367616>\nSTAR WARS MENTION\nSTAR WARS MENTION\nSTAR WARS MENTION");
 		}
 	}
 }

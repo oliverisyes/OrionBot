@@ -29,10 +29,7 @@ namespace OrionBot
 				.AddScoped<IBot, Bot>()
 				.BuildServiceProvider();
 
-			await using var db = new OrionContext();
-			Console.WriteLine($"Database path: {db.DbPath}");
-			Console.WriteLine("Checking database connects: ");
-			var playercheck = db.Players.OrderBy(b => b.UserID).First();
+			string playercheck = CheckDatabase();
 			Console.WriteLine(playercheck);
 
 			try
@@ -57,6 +54,15 @@ namespace OrionBot
 				Console.WriteLine(exception.Message);
 				Environment.Exit(-1);
 			}
+		}
+
+		public static string CheckDatabase()
+		{
+			using var db = new OrionContext();
+			Console.WriteLine($"Database path: {db.DbPath}");
+			Console.WriteLine("Checking database connects: ");
+			var playercheck = db.Players.OrderBy(b => b.UserID).First();
+			return playercheck.ToString();
 		}
 	}
 }
