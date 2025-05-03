@@ -13,16 +13,9 @@ namespace OrionBot.Commands.HungerGamesCommand
 		[Summary("Begins the hunger games")]
 		public async Task ExecuteAsync([Remainder][Summary("begin")] string phrase)
 		{
-			if(phrase == "begin")
-			{
+			phrase = phrase.ToLower();
 
-			}
-			else if(phrase.Contains("newplayer"))
-			{
-				
-				return;
-			}
-			else if(phrase == "removeplayer")
+			if(phrase == "begin")
 			{
 
 			}
@@ -35,10 +28,9 @@ namespace OrionBot.Commands.HungerGamesCommand
 			await ReplyAsync(phrase);
 		}
 
-		public bool NewPlayer()
+		public void Day()
 		{
-			
-			return true;
+
 		}
 	}
 }

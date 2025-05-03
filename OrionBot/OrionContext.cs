@@ -471,6 +471,17 @@ namespace OrionBot
 		}
 
 		//DiscordID
+		public static ulong GetDiscordIDID(int userID)
+		{
+			using var db = new OrionContext();
+			var player = db.Players
+				.Where(x => x.UserID == userID)
+				.Select (x => x.DiscordID)
+				.FirstOrDefault();
+
+			return player;
+		}
+
 		public static ulong GetDiscordIDName(string name)
 		{
 			using var db = new OrionContext();

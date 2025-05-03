@@ -73,7 +73,7 @@ namespace OrionBot
 
 			await scheduler.Start();
 
-			IJobDetail job = JobBuilder.Create<QotdSending>()
+			IJobDetail qotdJob = JobBuilder.Create<QotdSending>()
 				.WithIdentity("job1", "group1")
 				.SetJobData(new JobDataMap
 				{
@@ -81,7 +81,7 @@ namespace OrionBot
 				})
 				.Build();
 
-			ITrigger trigger = TriggerBuilder.Create()
+			ITrigger qotdTrigger = TriggerBuilder.Create()
 				.WithIdentity("trigger1", "group1")
 				.StartNow()
 				//.WithCronSchedule("0 * * * * ?")
@@ -89,7 +89,7 @@ namespace OrionBot
 				.ForJob("job1", "group1")
 				.Build();
 
-			await scheduler.ScheduleJob(job, trigger);
+			await scheduler.ScheduleJob(qotdJob, qotdTrigger);
 
 			//await scheduler.Shutdown();
 
@@ -116,6 +116,8 @@ namespace OrionBot
 			SetUpServer(guildID, guildName);
 		}
 
+		static bool swCooldown = false;
+
 		private async Task HandleCommandAsync(SocketMessage arg)
 		{
 			//Ignore messages from bots 
@@ -127,7 +129,6 @@ namespace OrionBot
 			//Log the recieved message
 			//_logger.LogInformation($"{DateTime.Now.ToShortTimeString()} - {message.Author}: {message.Content}");
 
-			//Check if message is a command
 			int position = 0;
 			SocketCommandContext command = new SocketCommandContext(_client, message);
 			ulong userID = command.User.Id;
@@ -148,9 +149,35 @@ namespace OrionBot
 				//Execute command if it exists in ServiceCollection
 				await _commands.ExecuteAsync(command, position, _serviceProvider);
 			}
-			else if (message.ToString().Contains("star wars") && userID != 503907258640367616 && command.Guild.GetUser(503907258640367616) != null)
+			else if (message.ToString().ToLower().Contains("star wars") && userID != 503907258640367616 && Server_Users.ServerUserExists(503907258640367616, command.Guild.Id) == true)
 			{
-				StarWars(command);
+				if (swCooldown == false)
+				{
+					StarWars.SWActivate(command);
+
+					StdSchedulerFactory factory = new StdSchedulerFactory();
+					IScheduler scheduler = await factory.GetScheduler();
+
+					IJobDetail swJob = JobBuilder.Create<StarWars>()
+						.WithIdentity("job2", "group1")
+						.Build();
+
+					ITrigger swTrigger = TriggerBuilder.Create()
+						.WithIdentity("trigger2", "group2")
+						.WithSimpleSchedule(x => x
+						.WithIntervalInMinutes(10)
+						.WithRepeatCount(1))
+						.Build();
+
+					await scheduler.ScheduleJob(swJob, swTrigger);
+				}
+			}
+
+			if (message.ToString().ToLower().Contains("meowsers") || message.ToString().ToLower().Contains("meow") && userID == 620951717831507989)
+			{
+				Console.WriteLine(_client.GetUser(620951717831507989));
+				var channel = command.Channel as IMessageChannel;
+				await channel.SendMessageAsync("Mist hush smhhh");
 			}
 		}
 
@@ -159,10 +186,14 @@ namespace OrionBot
 			Servers.AddServer(id, name);
 		}
 
-		public async static void StarWars(SocketCommandContext command)
+		public bool GetswCooldown()
 		{
-			var channel = command.Channel as IMessageChannel;
-			await channel.SendMessageAsync($"<@503907258640367616>\nSTAR WARS MENTION\nSTAR WARS MENTION\nSTAR WARS MENTION");
+			return swCooldown;
+		}
+
+		public static void SetswCooldown()
+		{
+			swCooldown = !swCooldown;
 		}
 	}
 }

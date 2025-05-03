@@ -86,9 +86,10 @@ namespace OrionBot.Commands.ProfileCommand
 			}
 			else if (phrase.StartsWith("change"))
 			{
+				name = name.Replace("change ", "");
 				if (Players.PlayerExistsID(userID))
 				{
-					Players.ChangePlayer(userID, phrase);
+					Players.ChangePlayer(userID, name);
 					await ReplyAsync("Your name has been changed");
 				}
 				else

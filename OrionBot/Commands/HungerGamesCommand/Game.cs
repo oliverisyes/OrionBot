@@ -1,0 +1,19 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace OrionBot.Commands.HungerGamesCommand
+{
+	internal class Game
+	{
+		Player players;
+
+
+		public Game()
+		{
+			
+		}
+	}
+}

@@ -20,17 +20,17 @@ namespace OrionBot.Commands.QotdCommand
 
 			for (int i = 0; i < Servers.GetLatestServerID(); i++)
 			{
-				Console.WriteLine("Latest serverID: " + Servers.GetLatestServerID());
-				Console.WriteLine("Current serverID: " + i);
+				//Console.WriteLine("Latest serverID: " + Servers.GetLatestServerID());
+				//Console.WriteLine("Current serverID: " + i);
 
 				ulong channelID = Servers.GetQotdChannel(i);
 
 				if (channelID != 0)
 				{
-					Console.WriteLine("ChannelID: " + channelID);
+					//Console.WriteLine("ChannelID: " + channelID);
 
 					var channel = _client.GetChannel(channelID) as IMessageChannel;
-					Console.WriteLine(channel);
+					//Console.WriteLine(channel);
 					if (channel != null)
 					{
 						string message = Qotd.GetQuestion(Servers.GetQotdID(i));

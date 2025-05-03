@@ -57,7 +57,7 @@ namespace OrionBot.Commands.HelpCommand
 		{
 			ulong serverID = Context.Guild.Id;
 			char prefix = Servers.GetPrefix(serverID);
-			category.ToLower();
+			category = category.ToLower();
 
 			var embed = new EmbedBuilder
 			{
