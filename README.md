@@ -103,5 +103,3 @@ Commands
   `!enable [time/qotd]`
 - Disable timezone/qotd commands:\
   `!disable [time/qotd]`
-!qotd channel will set the channel the bot will send the qotd to, this must be used in the wanted channel.<br>
-!qotd role {role ID} will mention the role when the qotd is sent.
