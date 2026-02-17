@@ -28,8 +28,9 @@ More detail about how to use these commands can be found in the [for users secti
 ## For Users
 > [!Important]
 > Before using any commands, ensure you've first created a [profile](#profile-anchor) with the bot.
-### Features
-**Help**\
+Info on how to use each of the bot's commands:
+
+### Help
 Provides help on how to use the bot commands.
 
 Commands
@@ -38,7 +39,7 @@ Commands
 - More specific help with a particular command:\
   `!help [profile/time/qotd]`
 
-**Prefix**\
+### Prefix
 Allows changing the bot's command prefix.\
 The default ! is a very command prefix for bots to use.\
 If this conflicts with another bot, I recommend changing it to something else.
@@ -49,7 +50,7 @@ Commands
   `!prefix [chosen prefix]`
 
 <a name="profile-anchor"></a>
-**Profile**\
+### Profile
 Allows the bot to store information about users and allows users to view that information.\
 Only one profile can be stored per discord account.
 
@@ -67,7 +68,7 @@ Commands
 - View another user's profile:\
   `!profile [their name]`
 
-**Timezones**\
+### Timezones
 Allows users to view the time in other users' timezones.\
 This can be particulary useful if you have multiple server members in different timezones.
 
@@ -81,7 +82,7 @@ Commands
 - Permanently remove your timezone:\
   `!time remove`
   
-**Question Of The Day**\
+### Question Of The Day
 Sends a daily question for server members to answer from a premade list of questions.\
 The question sends at 3pm UTC everyday.
 
@@ -92,7 +93,7 @@ Commands
 - Set a role to be pinged alongside the question (optional)\
   `!qotd [role ID]`
 
-**Enable/Disable**\
+### Enable/Disable
 Allows server owners to enable or disable the timezone or question of the day commands.\
 Both commands are enabled by default.
 
