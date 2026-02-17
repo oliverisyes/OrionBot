@@ -6,7 +6,7 @@ A simple discord bot built in C# using the [discord.net library](https://docs.di
 Invite the bot to your server using [this link!!](https://discord.com/oauth2/authorize?client_id=1325239790647640135&permissions=274877910016&integration_type=0&scope=bot)
 
 Info for developers [here!](README.md#for-developers)\
-Info for users [here!](OrionBot#for-users)
+Info for users [here!](#for-users)
 
 > [!Important]
 > Before using any commands, ensure you've first created a [profile](OrionBot#profile-anchor) with the bot.
