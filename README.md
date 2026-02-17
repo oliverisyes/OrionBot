@@ -28,6 +28,7 @@ More detail about how to use these commands can be found in the [for users secti
 ## For Users
 > [!Important]
 > Before using any commands, ensure you've first created a [profile](#profile-anchor) with the bot.
+
 Info on how to use each of the bot's commands:
 
 ### Help
