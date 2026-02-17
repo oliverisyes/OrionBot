@@ -1,44 +1,105 @@
 # OrionBot
-A simple discord bot built in C# using the [discord.net library](https://docs.discordnet.dev/).  
-**I do not recommend attempting to compile and run this bot yourself as it would require extensive modification to function correctly**  
+A simple discord bot built in C# using the [discord.net library](https://docs.discordnet.dev/).
+> [!Caution]
+> I do not recommend attempting to compile and run this bot yourself as it would require extensive modification to function correctly.
 
-Info for developers [here!](OrionBot#for-developers)  
-Info for users [here!](OrionBot#for-users)  
+Invite the bot to your server using [this link!!](https://discord.com/oauth2/authorize?client_id=1325239790647640135&permissions=274877910016&integration_type=0&scope=bot)
+
+Info for developers [here!](OrionBot#for-developers)\
+Info for users [here!](OrionBot#for-users)
+
+> [!Important]
+> Before using any commands, ensure you've first created a [profile](OrionBot#profile-anchor) with the bot.
+
+Major features:
+- !time - displays the time in the specified user's timezone
+- !qotd - allows the bot to send a daily question in a specified channel
+
+Other helpful commands:
+- !help - gives assistance with using a specified command
+- !prefix - changes the bot's command prefix to the specified symbol
+- !enable/!disable - enables or disables specified feature
+- !profile - displays the specified user's bot profile
+
+More detail about how to use these commands can be found in the [for users section](OrionBot#for-users).
 
 ## For Developers
 
 ## For Users
+> [!Important]
+> Before using any commands, ensure you've first created a [profile](OrionBot#profile-anchor) with the bot.
+### Features
+**Help**\
+Provides help on how to use the bot commands.
 
+Commands
+- General help with the bot:\
+  `!help`
+- More specific help with a particular command:\
+  `!help [profile/time/qotd]`
 
-<h2>Features</h2>
-Profile:
-Allows users to view their own and others profiles which displays all the information stored by the bot.
+**Prefix**\
+Allows changing the bot's command prefix.\
+The default ! is a very command prefix for bots to use.\
+If this conflicts with another bot, I recommend changing it to something else.
 
-Timezones:
-Allows users to save their timezone which allows other users to find out what time it is for them without having to ask.
+Commands
+- Set command prefix:\
+  *Although letters would work, I recommend using a symbol such as ? - $ _ or +*\
+  `!prefix [chosen prefix]`
 
-Question Of The Day:
-Allows server owners to set up a qotd to send to a specific channel at 3pm utc everyday, the qotd can optionally be set up to mention a role as well.
+<a name="profile-anchor"></a>
+**Profile**\
+Allows the bot to store information about users and allows users to view that information.\
+Only one profile can be stored per discord account.
 
-<h2>Usage Guide</h2>
-!help to recieve general instructions on how to use the bot.<br>
-Add the feature's name after help for more information on that feature.<br><br>
+Commands
+- View your own profile:\
+  `!profile`
+- Add your profile to the bot:\
+  *Your name doesn't have to match your discord username*\
+  *I recommend using a nickname people know you by*\
+  `!profile add [your name]`
+- Change your profile name:\
+  `!profile change [new name]`
+- Permanently remove your profile:\
+  `!profile remove`
+- View another user's profile:\
+  `!profile [their name]`
 
-If the default ! command prefix conflicts with other bots in the server, you can use !prefix {new prefix} to change it to anything one character long.<br>
-You can also enable and disable commands if needed do: !enable or !disable followed by the command name.
+**Timezones**\
+Allows users to view the time in other users' timezones.\
+This can be particulary useful if you have multiple server members in different timezones.
 
-<h3>Profile Commands</h3>
-!profile add {name} allows a user to add themselves to the bot.<br>
-!profile allows the user to view their own profile, adding a name afterwards allows them to see another user's profile.<br>
-!profile change {name} allows the user to change the name stored.<br>
-!profile remove allows the user to remove their profile (This is permanent and irreversable).
+Commands
+- View your own time:\
+  `!time`
+- Add your timezone to the bot:\
+  *If you're unsure what to enter for your timezone, you can find yours here: https://nodatime.org/TimeZones* \
+  *Copy and paste the "Zone ID", some cities may be referenced under an unexpected continent name*\
+  `!time add [continent/majorcity]`
+- Permanently remove your timezone:\
+  `!time remove`
+  
+**Question Of The Day**\
+Sends a daily question for server members to answer from a premade list of questions.\
+The question sends at 3pm UTC everyday.
 
-<h3>Timezone Commands</h3>
-!time add {Continent/City} allows the user to add their timezone to the bot. Some cities may be referenced under an unexpected continent name, if unsure check: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones<br>
-!time allows the user to view the time in their own timezone.<br>
-!time for {name} allows the user to see what time it is for another user.<br>
-!time remove allows the user to remove their timezone from the bot (The profile will remain however).
+Commands
+- Set a channel to send questions in:\
+  *Use this command in the channel you'd like to use*\
+  `!qotd channel`  
+- Set a role to be pinged alongside the question (optional)\
+  `!qotd [role ID]`
 
-<h3>Question Of The Day Commands</h3>
+**Enable/Disable**\
+Allows server owners to enable or disable the timezone or question of the day commands.\
+Both commands are enabled by default.
+
+Commands
+- Enable timezone/qotd commands:\
+  `!enable [time/qotd]`
+- Disable timezone/qotd commands:\
+  `!disable [time/qotd]`
 !qotd channel will set the channel the bot will send the qotd to, this must be used in the wanted channel.<br>
 !qotd role {role ID} will mention the role when the qotd is sent.
