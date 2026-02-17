@@ -24,6 +24,11 @@ Other helpful commands:
 More detail about how to use these commands can be found in the [for users section](#for-users).
 
 ## For Developers
+> [!Note]
+> This project has been largely unmaintained for the past year.\
+> I am planning to completely rewrite it with improved programming and structure in the near future.
+
+
 
 ## For Users
 > [!Important]
