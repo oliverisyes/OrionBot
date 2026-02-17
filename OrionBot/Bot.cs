@@ -172,13 +172,6 @@ namespace OrionBot
 					await scheduler.ScheduleJob(swJob, swTrigger);
 				}
 			}
-
-			if (message.ToString().ToLower().Contains("meowsers") || message.ToString().ToLower().Contains("meow") && userID == 620951717831507989)
-			{
-				Console.WriteLine(_client.GetUser(620951717831507989));
-				var channel = command.Channel as IMessageChannel;
-				await channel.SendMessageAsync("Mist hush smhhh");
-			}
 		}
 
 		public static void SetUpServer(ulong id, string name)

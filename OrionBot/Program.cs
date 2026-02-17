@@ -61,7 +61,7 @@ namespace OrionBot
 			using var db = new OrionContext();
 			Console.WriteLine($"Database path: {db.DbPath}");
 			Console.WriteLine("Checking database connects: ");
-			var playercheck = db.Players.OrderBy(b => b.UserID).First();
+			var playercheck = Servers.ServerExists(1022205198367739965);
 			return playercheck.ToString();
 		}
 	}
