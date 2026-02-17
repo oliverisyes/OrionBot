@@ -1,9 +1,9 @@
 # OrionBot
-A simple discord bot built in C# using the [discord.net library](https://docs.discordnet.dev/).
-**I do not recommend attempting to compile and run this bot yourself as it would require extensive modification to function correctly**
+A simple discord bot built in C# using the [discord.net library](https://docs.discordnet.dev/).  
+**I do not recommend attempting to compile and run this bot yourself as it would require extensive modification to function correctly**  
 
-Info for developers [here!](https://github.com/oliverisyes/OrionBot#for-developers)
-Info for users [here!](OrionBot#for-users)
+Info for developers [here!](OrionBot#for-developers)  
+Info for users [here!](OrionBot#for-users)  
 
 ## For Developers
 
