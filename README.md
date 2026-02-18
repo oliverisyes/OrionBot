@@ -43,7 +43,7 @@ This was to reduce hosting costs on a potentially indefinite deployment where a 
 
 It uses a SQLite database locally stored on the Raspberry Pi for storage.\
 This was due to SQLite's lightweight nature while still offering most of the benefits of any other relational database.\
-SQLite also avoids possible issues with bandwidth if it tries to read/write data while the Discord API is being used.
+SQLite working offline also avoids possible issues with bandwidth if it tries to read/write data while the Discord API is being used.
 
 ### Project Structure
 The main OrionBot folder contains:
