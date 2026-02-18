@@ -1,5 +1,5 @@
 # OrionBot
-A simple discord bot built in C# using the [discord.net library](https://docs.discordnet.dev/).
+A simple Discord bot built in C# using the [Discord.Net library](https://docs.discordnet.dev).
 > [!Caution]
 > I do not recommend attempting to compile and run this bot yourself as it would require extensive modification to function correctly.
 
@@ -21,14 +21,65 @@ Other helpful commands:
 - !enable/!disable - enables or disables specified feature
 - !profile - displays the specified user's bot profile
 
-More detail about how to use these commands can be found in the [for users section](#for-users).
+See [for users](#for-users) for more details on how to use each command.
 
 ## For Developers
 > [!Note]
 > This project has been largely unmaintained for the past year.\
 > I am planning to completely rewrite it with improved programming and structure in the near future.
 
+### Project Details
+As mentioned previously, this project is built in C# and uses the [Discord.Net library](https://docs.discordnet.dev) to connect to the Discord API, this allows me to use prewritten connections to the API so I can focus on the implementation of actual features rather than being concerned with interacting with the API directly.
 
+For storage, I'm using a SQLite database utilising EF Core and LINQ to prevent possible issues with datatypes or mistyped SQL statements.
+
+For timezone conversions, I've used [NodaTime](https://nodatime.org/) which similar to Discord.Net, allows me to focus on feature implementation rather than the complexities of timezones.
+
+For question of the day scheduling, I've used [Quartz.Net](https://www.quartz-scheduler.net) which again like Discord.Net and NodaTime, allows me to focus on implementation rather than creating my own scheduling solution. 
+
+### Deployment
+I currently have this project deployed on a Raspberry Pi I own.\
+This was to reduce hosting costs on a potentially indefinite deployment where a alternative cloud hosting solution would become unnecessarily expensive.
+
+It uses a SQLite database locally stored on the Raspberry Pi for storage.\
+This was due to SQLite's lightweight nature while still offering most of the benefits of any other relational database.\
+SQLite also avoids possible issues with bandwidth if it tries to read/write data while the Discord API is being used.
+
+### Project Structure
+The main OrionBot folder contains:
+#### Program.cs
+- Begins the program, begins the connection to the Discord API and checks the required database is present.
+#### OrionContext.cs
+- Uses EF Core to model the SQLite database by defining each of its tables as a set.
+- Each of the tables then has a class, where their fields are defined.
+- Also in these classes are methods using LINQ to query the database for data when needed.
+#### IBot.cs
+- Defines an interface for Bot.cs to implement.
+#### EnvReader.cs
+- Reads the .env file containing the bot API token.
+#### Bot.cs
+- Offers the choice to use either the debug or full versions of the bot.
+- Connects to the Discord API via [Discord.Net](https://docs.discordnet.dev) and using the relevant API token.
+- Schedules a [Quartz.Net](https://www.quartz-scheduler.net) job and trigger to be used for the qotd feature.
+- Asynchronously handles "JoinedGuild" (joined a new Discord server) events.
+  - When this is detected, the bot adds the server's details to the database.
+- Asynchronously handles "MessageRecieved" (message sent somewhere the bot has access to) events.
+  - Makes sure to ignore messages sent by other bots.
+  - Checks for the command prefix. If found, executes the relevant command.
+#### Commands (folder)
+Contains folders for each of the commands available to users.\
+All command classes are executed asynchronously and utilise the LINQ methods defined in OrionBot.context to complete database operations.
+- EnableCommand
+- HelpCommand
+- HungerGamesCommand
+  - Future feature
+- PrefixCommand
+- QotdCommand
+  - Uses the [Quartz.Net](https://www.quartz-scheduler.net) schedule defined in Bot.cs to send a message at the same time everyday.
+- TimezoneCommand
+  - Uses [NodaTime](https://nodatime.org/) to get the current time in UTC and convert it to required timezone.
+
+See [for users](#for-users) for more details about each command.
 
 ## For Users
 > [!Important]
